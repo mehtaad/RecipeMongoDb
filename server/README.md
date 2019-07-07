@@ -15,8 +15,8 @@ to call a Node.js RESTful service.
  Execute `mongod` to start the MongoDB daemon if it's not already running
 
 1. Run `npm install` to install app dependencies for angular app and
-2. Build angular app by running ng build
+1. Build angular app by running ng build
 
-3 cd to server directory and run npm install then run 'npm start'
-4. Browse to http://localhost:3000
+1. cd to server directory and run npm install then run 'npm start'
+1. Browse to http://localhost:3000
 
