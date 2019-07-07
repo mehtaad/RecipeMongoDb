@@ -26,5 +26,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-## Demo
-https://recipe-e7648.firebaseapp.com
+## Demo with mongodb
+Runing with local mongodb installed
+
+make sure angular production build is available in dist folder
+ng build 
+
+run mongod in new comman window
+
+run node server\server.js in new command window
+open browser and go to localhost:3000
