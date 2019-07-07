@@ -1,7 +1,7 @@
 // Module dependencies
 const mongoose = require('mongoose'),
       dbConfig = require('./configLoader').databaseConfig,
-      connectionString = 'mongodb://' + dbConfig.host + '/' + dbConfig.database;
+      connectionString = process.env.MONGODB_URI || 'mongodb://' + dbConfig.host + '/' + dbConfig.database;
       
 let   connection = null;
 

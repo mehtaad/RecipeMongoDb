@@ -1,7 +1,4 @@
 const express       = require('express'),
-    exphbs          = require('express-handlebars'),
-    hbsHelpers      = require('handlebars-helpers'),
-    hbsLayouts      = require('handlebars-layouts'),
     bodyParser      = require('body-parser'),
     cookieParser    = require('cookie-parser'),
     errorhandler    = require('errorhandler'),
@@ -18,9 +15,7 @@ const express       = require('express'),
 class Server {
 
     constructor() {
-        this.initViewEngine();
         this.initExpressMiddleWare();
-        this.initCustomMiddleware();
         this.initDbSeeder();
         this.initRoutes();
         this.start();
@@ -32,15 +27,7 @@ class Server {
         });
     }
 
-    initViewEngine() {
-        const hbs = exphbs.create({
-            extname: '.hbs',
-            defaultLayout: 'master'
-        });
-        app.engine('hbs', hbs.engine);
-        app.set('view engine', 'hbs');
-        hbsLayouts.register(hbs.handlebars, {});
-    }
+    
 
     initExpressMiddleWare() {
         var rootPath = path.normalize(__dirname + '/../');
@@ -65,23 +52,7 @@ class Server {
         });
     }
 
-    initCustomMiddleware() {
-        if (process.platform === "win32") {
-            require("readline").createInterface({
-                input: process.stdin,
-                output: process.stdout
-            }).on("SIGINT", () => {
-                console.log('SIGINT: Closing MongoDB connection');
-                database.close();
-            });
-        }
-
-        process.on('SIGINT', () => {
-            console.log('SIGINT: Closing MongoDB connection');
-            database.close();
-        });
-    }
-
+    
     initDbSeeder() {
         database.open(() => {
             //Set NODE_ENV to 'development' and uncomment the following if to only run
