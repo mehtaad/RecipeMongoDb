@@ -1,0 +1,230 @@
+<style>
+.clear-textarea {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  
+}
+
+</style>
+<div class="card">
+  <div class="card-header">
+    {{pageTitle}}
+  </div>
+
+  <div class="card-body">
+    <form novalidate
+          (ngSubmit)="saveProduct()"
+          [formGroup]="productForm">
+      <!-- Top level info -->
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label"
+               for="nameId">Product Name</label>
+        <div class="col-md-8">
+          <input class="form-control"
+                 [disabled]=readOnly
+                 id="nameId"
+                 type="text"
+                 placeholder="Name (required)"
+                 formControlName="name"
+                 [disableControl]=readOnly
+                 [ngClass]="{'is-invalid': displayMessage.name }" />
+          <span class="invalid-feedback">
+            {{displayMessage.name}}
+          </span>
+        </div>
+      </div>
+      
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label"
+               for="overviewId">Overview</label>
+
+        <div class="col-md-8">
+          <textarea class="form-control"
+                    [disableControl]=readOnly
+                    id="overviewId"
+                    placeholder="Overview"
+                    rows=3
+                    formControlName="overview"
+                    [ngClass]="{'is-invalid': displayMessage.overview}"></textarea>
+          <span class="invalid-feedback">
+            {{ displayMessage.overview}}
+          </span>
+        </div>
+      </div>
+      <!-- Ingrediants info -->
+      <div class="card-header" style="margin-bottom:20px">
+        Ingrediants!
+      </div>      
+      
+      <div formArrayName="ingrediants" *ngFor="let ingrediant of ingrediants.controls; let i=index">
+          <div [formGroupName]="i">
+            <div class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                      attr.for="{{'ingrediantId' + i}}">Ingrediant{{i+1}}</label>
+              <div class="col-md-8">
+                <input class="form-control"
+                        id="{{'ingrediantId' + i}}"
+                        type="text"
+                        placeholder="Ingrediant (required)"
+                        [disableControl]=readOnly
+                        formControlName="ingrediantname"
+                        [ngClass]="{'is-invalid': (ingrediant.controls.ingrediantname.touched || 
+                                                  ingrediant.controls.ingrediantname.dirty) && 
+                                                  !ingrediant.controls.ingrediantname.valid }">
+                <span class="invalid-feedback">
+                  <span *ngIf="ingrediant.controls.ingrediantname.errors?.required">
+                    Please enter ingrediant.
+                  </span>
+                </span>
+              </div>
+              <span *ngIf="!readOnly">
+                <button *ngIf="i>0" title="delete this Ingrediant" class="btn text-danger" (click)="deleteIngrediant(i)">
+                  <i class="fa fa-trash"></i></button>
+                <button title="add one more Ingrediant" *ngIf="i === ingrediants.controls.length-1" [disabled]="!ingrediants.valid"
+                    (click)="addIngrediant()" class="btn text-success"><i class="fa fa-plus"></i></button>
+              </span>  
+            </div>
+          </div>
+        </div>
+      
+      <!-- Steps here -->
+      <div class="card-header" style="margin-bottom:20px">
+        Steps!
+      </div>
+      <div formArrayName="steps"  *ngFor="let step of steps.controls; let i=index">
+        <hr *ngIf="i>0">
+        <div [formGroupName]="i">
+          <div class="form-group row mb-2">
+            <label class="col-md-1 col-form-label"
+                   attr.for="{{'stepId' + i}}">Step# {{i+1}} </label>
+                 
+            <div class="col-md-7">
+              <textarea class="form-control"
+                     id="{{'stepId' + i}}"
+                     type="text"
+                     placeholder="Enter Direction for step {{i+1}} (required)"
+                     formControlName="description"
+                     [disableControl]=readOnly
+                     [ngClass]="{'is-invalid': (step.controls.description.touched || 
+                                                step.controls.description.dirty) && 
+                                                !step.controls.description.valid }">
+              </textarea>
+              <button *ngIf="step.controls.description.value && step.controls.description.value.length>1 && !readOnly" 
+                title="clear content"
+                  (click)="clearValue(i,'description')" class="btn text-danger clear-textarea"><i class="fa fa-close"></i></button>
+              <span class="invalid-feedback">
+                <span *ngIf="step.controls.description.errors?.required">
+                  Please enter Direction for this step.
+                </span>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <input class="form-control"
+                     id="{{'stepIdTime' + i}}"
+                     type="number"
+                     placeholder="Time to Prepare in seconds"
+                     [disableControl]=readOnly
+                     formControlName="time"
+                     [ngClass]="{'is-invalid': (step.controls.time.touched || 
+                                                step.controls.time.dirty) && 
+                                                !step.controls.time.valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="step.controls.time.errors?.required">
+                  Please enter correct time.
+                </span>
+              </span>
+            </div>
+            <span *ngIf="!readOnly">
+              <button *ngIf="i>0" title="delete this step" class="btn text-danger" (click)="deleteStep(i)"><i class="fa fa-trash"></i></button>
+              <button title="add one more step" *ngIf="i === steps.controls.length-1" [disabled]="!steps.valid"
+                  (click)="addStep()" class="btn text-success"><i class="fa fa-plus"></i></button>
+            </span>  
+          </div>
+
+          
+          <div class="form-group row mb-2">
+            <label class="col-md-1 col-form-label"
+                   attr.for="{{'photo' + i}}">Photo</label>
+            <div class="col-md-4">
+              <input class="form-control" #file
+                     id="{{'photo' + i}}"
+                     type="file"
+                     [disableControl]=readOnly
+                     placeholder="Enter Url for photo  (Optional)"
+                     formControlName="photo" accept='image/*' (change)="preview(file, i)" />
+            <button *ngIf="step.controls.photo.value && step.controls.photo.value.length>1 && !readOnly" title="clear content"
+                        (click)="clearValue(i,'photo');step.controls.photoData.value=null" class="btn text-danger clear-textarea"><i class="fa fa-close"></i></button>       
+            </div>
+            <div class="col-md-1" *ngIf="step.controls.photoData.value">
+                <img [src]="step.controls.photoData.value" height="50" >
+            </div>
+            <label class="col-md-1 col-form-label"
+                     attr.for="{{'video' + i}}">VideoUrl</label>
+              <div class="col-md-4">
+                <input class="form-control"
+                       id="{{'video' + i}}"
+                       type="text"
+                       [disableControl]=readOnly
+                       placeholder="Enter Url for video  (Optional)"
+                       formControlName="video" (change)="isURLReal(step.controls.video.value, i)">
+                       <button *ngIf="step.controls.video.value && step.controls.video.value.length>1" 
+                        title="clear content" (click)="clearValue(i,'video');" class="btn text-danger clear-textarea"><i class="fa fa-close"></i></button>              
+              </div>
+              <button *ngIf="step.controls.video.value && step.controls.video.value.length>1 && !readOnly" title="clear content"
+                (click)="clearValue(i,'video');" class="btn text-danger clear-textarea"><i class="fa fa-close"></i></button>       
+              <div class="col-md-1">
+                <video *ngIf="step.controls.video.value" width="50" height="50" controls="" controlslist="nodownload" 
+                  autoplay="true">
+                  <source [src]="step.controls.video.value" type="video/mp4">
+                  </video>
+              </div>
+          </div>
+            
+          
+
+        </div>
+      </div>  
+      <!--Buttons  -->
+      <hr>
+      <div class="form-group row mb-2">
+        <div class="offset-md-2 col-md-8">
+          <button *ngIf="readOnly===false" class="btn btn-primary mr-3"
+                  style="width:80px;"
+                  type="submit"
+                  [title]="productForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                  [disabled]="!productForm.valid">
+            Save
+          </button>
+          <button class="btn btn-outline-secondary mr-3"
+                  style="width:80px;"
+                  type="button"
+                  title="Cancel your edits"
+                  [routerLink]="['/recipe']">
+            Cancel
+          </button>
+          <button class="btn btn-outline-warning mr-3"
+                  style="width:80px"
+                  type="button"
+                  title="Delete this Recipe"
+                  (click)="deleteProduct()">
+            Delete
+          </button>
+          <button class="btn btn-outline-primary"
+                  style="width:80px"
+                  type="button"
+                  title="Execute this Recipe"
+                  [routerLink]="['/excute', product?._id]">
+            Excute
+          </button>
+          
+          
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="alert alert-danger"
+       *ngIf="errorMessage">{{errorMessage}}
+  </div>
+</div>

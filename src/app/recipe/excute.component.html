@@ -1,0 +1,111 @@
+<style>
+    .clear-textarea {
+      position: absolute;
+      top: 0;
+      right: 14px;
+      
+    }
+    .content-fill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    </style>
+    <div class="card">
+      <div class="card-header">
+        {{pageTitle}}
+      </div>
+    
+      <div class="card-body">
+        <!-- Ingrediants info -->  
+        <div *ngIf="!stepNumber" >
+          <div class="card-header" style="margin-bottom:20px">
+            Collect all Ingrediants, once done click 'Next Step' to start execution           
+          </div>     
+          <div *ngIf="product && product.ingrediants">
+            <div  *ngFor="let ingrediant of product.ingrediants; let i=index">
+                
+                  <div  class="row mb-2">
+                    <label class="col-md-2 col-form-label">Ingrediant{{i+1}}</label>
+                    <label class="col-md-4 col-form-label">{{ingrediant.ingrediantname}}</label>        
+                  </div>
+            </div>
+          </div>  
+        </div> 
+        <div *ngIf="stepNumber">
+          <div class="card-header" style="margin-bottom:20px">
+            <p>Execute Step {{stepNumber}} :            
+              {{product.steps[stepNumber-1].description}}
+            </p>
+          </div>
+          <!-- option to strat the time -->
+          <div class="row" *ngIf="product.steps[stepNumber-1].time">
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary"
+                        style="width:180px;float:left"
+                        type="button"
+                        title="Start Timer"
+                        [disabled]="timerStarted"
+                        (click)="startTimer()">
+                  Start Timer
+                </button>
+            </div>
+            <div class="col-md-4" *ngIf="timerStarted">
+                <label class="col-md-12 col-form-label">Time Remaining: {{timerValueLeft}} seconds</label>
+            </div>
+            <div class="col-md-2" *ngIf="timerStarted">
+                <button class="btn btn-outline-secondary"
+                        style="width:180px;float:left"
+                        type="button"
+                        title="Pause Timer"
+                        
+                        (click)="toggleTimer()">
+                  {{toggleTimerStr}}
+                </button>
+            </div>
+          </div>   
+          <hr>
+          <div class="row">
+            <div class="col-md-6 content-fill" *ngIf="product.steps[stepNumber-1].photoData">
+                <img class="" [src]="product.steps[stepNumber-1].photoData" width="450" height="350" >
+            </div>
+            <div class="col-md-6 content-fill" *ngIf="product.steps[stepNumber-1].video">
+                
+                <video  class="" width="450" height="400" controls="" controlslist="nodownload" autoplay="true">
+                  <source [src]="product.steps[stepNumber-1].video" type="video/mp4">
+                </video>
+            </div>
+          </div>
+        </div>
+      </div>          
+      <!--Buttons  -->
+      <hr>
+      <div class="form-group row mb-2">
+        <div class="col-md-12">
+            <button class="btn btn-outline-primary ml-3"
+                    style="width:80px;float:left"
+                    type="button"
+                    title="Go back"
+                    [disabled]="!stepNumber"
+                    (click)="lastStep()">
+              Back
+            </button>
+            <button class="btn btn-outline-primary mr-3"
+                  style="width:80px;float:right"
+                  type="button"
+                  title="Next Step"
+                  [disabled]="lastStepNumber===stepNumber"
+                  (click)="nextStep()">
+              Next
+            </button>
+          
+          
+        </div>
+      </div>
+      <div class="alert alert-danger"
+            *ngIf="errorMessage">{{errorMessage}}
+      </div>
+    </div>
+    
+    
+  
