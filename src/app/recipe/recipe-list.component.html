@@ -1,0 +1,70 @@
+<div class="card">
+  <div class="card-header">
+    {{pageTitle}}
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-2">Filter by:</div>
+      <div class="col-md-4">
+        <input type="text"
+               [(ngModel)]="listFilter" />
+      </div>
+    </div>
+    <div class="row"
+         *ngIf="listFilter">
+      <div class="col-md-6">
+        <h4>Filtered by: {{listFilter}}</h4>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table mb-0"
+             *ngIf="products && products.length">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Overview</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of filteredProducts">
+            <td>
+                {{ product._id }}
+            </td>
+            <td>
+              <a [routerLink]="['/recipe', product._id]"
+                 [queryParams]="{ readonly: 'true'}" 
+              >
+                {{ product.name }}
+              </a>
+            </td>
+            <td>{{ product.overview }}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm"
+                      [routerLink]="['/recipe', product._id]"
+                      [queryParams]="{ readonly: 'false'}" >
+                Edit
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm"
+                      [routerLink]="['/excute', product._id]">
+                Execute
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="errorMessage"
+     class="alert alert-danger">
+  Error: {{ errorMessage }}
+</div>
