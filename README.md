@@ -30,9 +30,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Runing with local mongodb installed
 
 make sure angular production build is available in dist folder
-ng build 
+Run "ng build" from installation directory
 
-run mongod in new comman window
+run mongod in new comman window after you have installed mogodb on your PC/Laptop
 
-run node server\server.js in new command window
+Open new command prompt and go to insallation directory, run "node server\server.js" 
 open browser and go to localhost:3000
